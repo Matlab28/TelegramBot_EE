@@ -1,9 +1,9 @@
 package com.example.telegrambot.service;
 
-import com.example.telegrambot.client.ExampleFeignClient;
-import com.example.telegrambot.dto.request.MessageRequestDto;
-import com.example.telegrambot.dto.telegram.Result;
-import com.example.telegrambot.dto.telegram.Root;
+import com.example.telegrambot.client.TelegramFeignClient;
+import com.example.telegrambot.dto.request.TelegramRequestRoot;
+import com.example.telegrambot.dto.response.TelegramResponseRoot;
+import com.example.telegrambot.dto.response.TelegramSendDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -13,24 +13,33 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 public class TelegramBotService {
-    private final ExampleFeignClient feignClient;
+    private final TelegramFeignClient feignClient;
 
-    @Scheduled(fixedDelay = 1000)
-    public void getUpdates() {
-        Root updates = feignClient.getUpdates();
-
-        for (Result result : updates.getResult()) {
-            if (result.getMessage().getText().toLowerCase().contains("hello")) {
-                String text = "Hello " + result.getMessage().getChat().getFirst_name();
-
-
-
-            }
-        }
+    public TelegramRequestRoot getUpdateService() {
+        TelegramRequestRoot updates = feignClient.getUpdates(0L);
+        Integer updateId = updates.getResult().get(updates.getResult().size() - 1).getUpdateId();
+        log.info("Message got from - ");
+        return feignClient.getUpdates(Long.valueOf(updateId));
     }
 
-    public void sendMessage(MessageRequestDto messageRequestDto){
-        feignClient.sendMessage(messageRequestDto);
+    public TelegramResponseRoot sendMessage(TelegramSendDto dto) {
+        return feignClient.sendMessage(dto);
+    }
 
+
+    @Scheduled(fixedDelay = 5000)
+    public void set() {
+        TelegramRequestRoot updateService = getUpdateService();
+        String text = updateService.getResult().get(0).getMessage().getText();
+        Long id = updateService.getResult().get(0).getMessage().getChat().getId();
+        TelegramSendDto dto = new TelegramSendDto();
+        dto.setChatId(String.valueOf(id));
+
+        if (text.equals("/start")) {
+            String msg = "Hi " + updateService.getResult().get(0).getMessage().getFrom().getFirstName() +
+                    "!\nHow can I help you?";
+            dto.setText(msg);
+            sendMessage(dto);
+        }
     }
 }
