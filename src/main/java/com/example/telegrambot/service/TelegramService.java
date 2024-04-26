@@ -33,7 +33,7 @@ public class TelegramService {
     public TelegramRequestRoot getUpdateService() {
         TelegramRequestRoot updates = feignClient.getUpdates(0L);
         Integer updateId = updates.getResult().get(updates.getResult().size() - 1).getUpdateId();
-        log.info("Message got from - " + getUpdateService().getResult().get(0).getMessage().getFrom().getFirstName());
+        log.info("Message got");
         return feignClient.getUpdates(Long.valueOf(updateId));
     }
 
