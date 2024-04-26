@@ -6,7 +6,6 @@ import com.example.telegrambot.dto.response.TelegramResponseRoot;
 import com.example.telegrambot.dto.response.TelegramSendDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,12 +21,11 @@ public class TelegramBotService {
         return feignClient.getUpdates(Long.valueOf(updateId));
     }
 
+
     public TelegramResponseRoot sendMessage(TelegramSendDto dto) {
         return feignClient.sendMessage(dto);
     }
 
-
-    @Scheduled(fixedDelay = 5000)
     public void set() {
         TelegramRequestRoot updateService = getUpdateService();
         String text = updateService.getResult().get(0).getMessage().getText();
@@ -40,6 +38,8 @@ public class TelegramBotService {
                     "!\nHow can I help you?";
             dto.setText(msg);
             sendMessage(dto);
+        } else if (text.toLowerCase().contains("book")) {
+
         }
     }
 }
