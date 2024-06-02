@@ -6,7 +6,7 @@ import com.example.telegrambot.dto.response.TelegramSendDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(name = "telegramApi", url = "https://api.telegram.org/bot6627982719:AAHlTAMMWAJmUr-8rDe4N_z0whUsloFdiwk")
+@FeignClient(name = "telegramApi", url = "https://api.telegram.org/botYOUR_BOT_TOKEN")
 public interface TelegramFeignClient {
 
 //    @GetMapping("/getUpdates?offset={value}")
