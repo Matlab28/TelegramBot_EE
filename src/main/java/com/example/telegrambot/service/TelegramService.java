@@ -24,10 +24,10 @@ public class TelegramService {
     private final RestTemplate restTemplate;
     private final BookService service;
 
-    @Value("book-finder1.p.rapidapi.com")
+    @Value("YOUR_RAPID_API_HOST")
     private String rapidApiHost;
 
-    @Value("674678e122mshd00ec5b8f945302p1052bcjsn0ad69ed2af91")
+    @Value("YOUR_RAPID_API_KEY")
     private String rapidApiKey;
 
     public TelegramRequestRoot getUpdateService() {
